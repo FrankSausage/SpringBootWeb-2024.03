@@ -1,5 +1,6 @@
 package com.example.sb.users;
 
+import jakarta.servlet.http.HttpSession;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,14 +40,27 @@ public class UserController {
         return "user/login";
     }
     @PostMapping("/login")
-    public String loginProc(String uid, String pwd, Model model) {
+    public String loginProc(String uid, String pwd, Model model, HttpSession session) {
         int result = uSvc.login(uid, pwd);
+        String msg = null, url = null;
         if(result == uSvc.CORRECT_LOGIN){
-            model.addAttribute("msg", uSvc.getUserByUid(uid).getUname() + "님 환영합니다.");
+            session.setAttribute("sessUid", uid);
+            session.setAttribute("sessUname", uSvc.getUserByUid(uid).getUname());
+            msg = uSvc.getUserByUid(uid).getUname() + "님 환영합니다.";
+            url = "/sb/user/list/1";
         } else {
-            model.addAttribute("msg", "계정이 존재하지 않거나 잘못 입력됐습니다.");
+            msg = "계정이 존재하지 않거나 잘못 입력됐습니다.";
+            url = "/sb/user/login";
         }
-        return "user/loginResult";
+        model.addAttribute("msg", msg);
+        model.addAttribute("url", url);
+        return "user/alertMsg";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/user/list/1";
     }
 
     @GetMapping("/update/{uid}")
@@ -57,9 +71,12 @@ public class UserController {
     }
     @PostMapping("/update")
     public String updateProc(String uid, String pwd, String pwd2, String uname, String email) {
-        if(pwd.equals(pwd2)) {
+        User u = uSvc.getUserByUid(uid);
+        if(pwd != null && pwd.equals(pwd2)) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
-            User u = new User(uid, hashedPwd, uname, email);
+            u.setPwd(hashedPwd);
+            u.setUname(uname);
+            u.setEmail(email);
             uSvc.updateUser(u);
         } else {
             System.out.println("에러" + uid + pwd + pwd2 + uname + email );
