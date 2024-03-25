@@ -1,0 +1,30 @@
+    <!DOCTYPE html>
+    <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Exam Member List</title>
+        <style>
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 6px;
+            }
+        </style>
+    </head>
+    <body style="margin: 50px;">
+        <h1>Member List</h1>
+        <hr>
+        <table>
+            <tr>
+                <th>ID</th><th>Name</th><th>Age</th><th>Country</th>
+            </tr>
+            <tr th:each="member : ${memberList}">
+                <td>[[${member.mid}]]</td><td>[[${member.name}]]</td>
+                <td>[[${member.age}]]</td><td>[[${member.country}]]</td>
+            </tr>
+        </table>
+    </body>
+    </html>

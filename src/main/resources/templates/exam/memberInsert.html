@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Member Insert</title>
+</head>
+<body style="margin: 50px;">
+    <h1>Member Insert</h1>
+    <hr>
+    <form action="/sb/member/insert" method="post">
+        <input type="text" name="name" placeholder="member Name" required><br><br>
+        <input type="text" name="age" placeholder="member Age" required><br><br>
+        <select name="country">
+            <option value="한국" th:text="한국">Text</option>
+            <option value="미국" th:text="미국">Text</option>
+            <option value="영국" th:text="영국">Text</option>
+        </select>  <input style="margin-left: 20px" type="submit" value="생성">
+    </form>
+</body>
+</html>
